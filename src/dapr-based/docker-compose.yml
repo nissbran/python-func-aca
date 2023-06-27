@@ -1,0 +1,17 @@
+services:
+  subscriber:
+    image: ${DOCKER_REGISTRY-}python-dapr-subscriber
+    build:
+      context: dapr-sub
+  subscriber-dapr:
+      image: daprio/daprd:1.11.1
+      command: ["./daprd",
+        "-app-id", "sub1",
+        "-app-port", "5000",
+        "-resources-path", "./components"]   
+      volumes:
+        - "./dapr-components/:/components"
+      depends_on:
+        subscriber:
+          condition: service_started
+      network_mode: "service:subscriber"
