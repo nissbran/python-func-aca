@@ -1,4 +1,6 @@
 import json
+import time
+
 import flask
 import logging
 
@@ -16,7 +18,7 @@ if __name__ != '__main__':
 @app.route('/dapr/subscribe', methods=['GET'])
 def subscribe():
     subscriptions = [{'pubsubname': 'pubsub',
-                      'topic': 'tests',
+                      'topic': 'updates',
                       'route': 'handler'}]
     return jsonify(subscriptions)
 
@@ -26,6 +28,7 @@ def event_handler():
     event = from_http(request.headers, request.get_data())
     app.logger.info('Received event with id: {}'.format(event['id']))
 
+    time.sleep(0.5)
     # Do stuff here ------
 
     return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
